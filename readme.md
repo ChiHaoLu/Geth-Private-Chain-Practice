@@ -28,6 +28,15 @@ Geth是如何同步於區塊鏈的：
 
 ## Overview
 
+| Name | Statement |
+| -------- | -------- |
+| Private Network| 私有網路會獨立於其他以太坊網路|
+| Node|區塊鏈網路的參與者|
+|Bootnode||幫助節點尋找 P2P 網路中的其他節點|
+|Miner|於區塊裡打包交易的礦工|
+|Account|使用公私鑰與區塊鏈網路進行互動|
+|Genesis Configuration|是 Geth 工具用來創建創世區塊以及區塊鏈的配置文件，要注意的是 genesis.json 並不是創世區塊本身。|
+
 不同的區塊鏈性質
 * 公鏈（Public Blockchain）：任何人都可以平等地參與、挖礦、讀取鏈上資訊、進行交易，例如：以太坊主網和測試網。
 * 聯盟鏈（Consortium Blockchain）：任何經過授權的節點都可以參與。
@@ -69,9 +78,8 @@ geth --help
 * 這裡並沒有HTTP RPC endpoint open(loclahost:8545)，所以我們無法在此直接連接瀏覽器
 
 ### 資料預設儲存位置
-我們可以在此找到所有的區塊資料：User->AppData->Roaming->Ethereum->geth->chaindata
-我們可以在此找到所有的密鑰資料：User->AppData->Roaming->Ethereum->geth->keystore
-
+* 我們可以在此找到所有的區塊資料：User->AppData->Roaming->Ethereum->geth->chaindata
+* 我們可以在此找到所有的密鑰資料：User->AppData->Roaming->Ethereum->geth->keystore
 > Linux: ~/.ethereum 
 > OSX: ~/Library/Ethereum 
 > Windows: ~/AppData/Roaming/Ethereum
@@ -109,8 +117,26 @@ Genesis.json Files
 }
 ```
 
-EIPs 是以太坊中的一套標準，內容會包含 core protocol specifications、用戶 API、和合約標準。
-gas 是一個在與合約進行交易時的內部價格，當我們傳送一些指令給 Ethereum Virtual Machine (EVM) 來進行交易或與合約互動時就會消耗一定量的 gas。
+
+|參數|介紹|
+| -------- | -------- |
+|chainID|這裡和等下的 networkid 一樣由 EIP 155 提供 chainid values 的建議來代稱不同網路。只有當 network、chainID、創世區塊配置都相同時，才是同一條鏈。|
+|homesteadBlock|0 為使用 ethereum homestead 版本。Homestead 是以太坊的第二個主要版本。和 2017 以太坊的拜占庭硬分叉有關|
+|eip150Block|設為 0 表示私有鏈不會因為 EIP-150 這個提議而分岔|
+|eip155Block|設為 0 表示私有鏈不會因為 EIP-155 這個提議而分岔|
+|eip158Block|設為 0 表示私有鏈不會因為 EIP-158 這個提議而分岔|
+|nonce|用於挖礦的 64bits 隨機數，是與 PoW 機制有關的值|
+|difficulty|定義了每次挖礦時，最終確定nonce 的難度。詳細內容可見 Ethash(PoW) 方法|
+|mixhash|與 nonce 配合用於挖礦，由上一個區塊的部分產生雜湊值|
+|coinbase|預設為第一個建立挖礦的礦工|
+|timestamp|創世區塊的時間戳|
+|parentHash|指定了本區塊的上一個區塊Hash，因此創世區塊的 parentHash 是 0|
+|extraData|附加訊息。若是在 Clique(PoA) 機制下，新區塊只能被簽名人（singers）挖掘，區塊鏈生長過程中，可以通過投票來選舉或者免除簽名人。在區塊鏈開始運行時，需要定義一個初始 singer。 詳見 EIP-225。|
+|gasLimit|規定該區塊鏈中，交易使用的 gas 的總量上限。某種程度上是規定區塊中能包含的交易信息量總和。|
+|alloc|可以從創世區塊預置帳號及其帳號內的金額，單位是 wei 不是 eth|
+
+> EIPs 是以太坊中的一套標準，內容會包含 core protocol specifications、用戶 API、和合約標準。
+> gas 是一個在與合約進行交易時的內部價格，當我們傳送一些指令給 Ethereum Virtual Machine (EVM) 來進行交易或與合約互動時就會消耗一定量的 gas。
 Private Network中使用JSON API
     
 打開一PowerShell作為伺服器端
@@ -135,6 +161,17 @@ Attach Javascript Console
 > exitJA
 ```
 
+
+|對象|功能|
+| -------- | -------- |
+|eth|操作區塊鏈|
+|net|查看 P2P 網路狀態|
+|admin|管理節點|
+|miner|啟動 & 停止挖礦|
+|personal|管理帳戶|
+|txpool|查看交易內存池|
+|web3|包含以上對象，以及單位換算的方法|
+
 在Private Network中進行挖礦
 ```
 > eth.coinbase;
@@ -156,3 +193,15 @@ $ geth --datadir .\privateChaindata\ --nodiscover --unlock 0 --mine 0
 ```
 * --unlock 0 means unlock first account
 * --mine 0 means mining with one fret
+
+|參數|介紹|
+| -------- | -------- |
+|networkid|同見上文的 ChainID 部分以及 EIP-155。這邊要注意的是 networkid 與創世區塊的 chainID 必須相等，否則交易時會出現錯誤。|
+|mine|啟動挖礦功能|
+|rpc|啟用 HTTP-RPC 通訊協定功能，如此錢包應用程式就可以藉由 http 來連動這個挖礦節點。如果需要佈署智慧合約就需要將其加入。|
+|rpcaddr|指定 HTTP-RPC 的 listening interface，預設為 “localhost”|
+|rpcport|指定 HTTP-RPC 的 listening port（網絡監聽連接埠），預設為 8545|
+|rpcapi|指定透過 HTTP-RPC interface 可以適用的 API，預設為 “eth,net,web3”|
+|rpccorsdomain|允許跨網域的存取調用，\*代表來自任何網段。 當使用瀏覽器的錢包或 Solidity 編輯器（Remix）來部署智能合約時，就會需要注意這個部分|
+|nodiscover|不搜尋其他網段上的節點。會停止端點搜尋機制，也就是說沒有其他 local 網路裏的節點可以發現我們的節點。|
+|console|這是一個交互式的 Javascript 執行環境，可以在裡面執行 Javascript 的相關程式碼和可以在Geth中執行命令|
