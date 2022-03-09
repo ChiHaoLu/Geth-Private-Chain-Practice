@@ -1,3 +1,6 @@
+# Go-Ethereum
+
+## Basic Introduction
 Go-Ethereum，又簡稱Geth，為：
 1. Ethereum Protocal
 2. Command Line 工具
@@ -23,7 +26,7 @@ Geth是如何同步於區塊鏈的：
     * 安全性較低但速度非常快，屬於實驗性質的同步方式
 
 
-### Overview
+## Overview
 
 不同的區塊鏈性質
 * 公鏈（Public Blockchain）：任何人都可以平等地參與、挖礦、讀取鏈上資訊、進行交易，例如：以太坊主網和測試網。
@@ -52,17 +55,20 @@ geth --help
 4. 若需要中斷區塊同步可使用ctrl+c
 
 ### Geth 的Log-Output
-INFO [02-19|00:18:12.450] Starting peer-to-peer node               instance=Geth/v1.10.14-stable-11a3a350/windows-amd64/go1.17.5
-Geth並不具有自動更新的機制，所以我們需要時時刻刻的手動將其更新到最新版本
-Ethereum Protocol和Geth有密不可分的關係
-bits-version有32和64
-INFO [02-19|00:18:12.417] Initialised chain configuration          config="{ChainID: 1 Homestead: 1150000 DAO: 1920000 DAOSupport: true EIP150: 2463000 EIP155: 2675000 EIP158: 2675000 Byzantium: 4370000 Constantinople: 7280000 Petersburg: 7280000 Istanbul: 9069000, Muir Glacier: 9200000, Berlin: 12244000, London: 12965000, Arrow Glacier: 13773000, MergeFork: <nil>, Engine: ethash}"
-Configuration
-chainID
+`INFO [02-19|00:18:12.450] Starting peer-to-peer node               instance=Geth/v1.10.14-stable-11a3a350/windows-amd64/go1.17.5` <br>
+* Geth並不具有自動更新的機制，所以我們需要時時刻刻的手動將其更新到最新版本
+* Ethereum Protocol和Geth有密不可分的關係
+* bits-version有32和64
+
+`INFO [02-19|00:18:12.417] Initialised chain configuration          config="{ChainID: 1 Homestead: 1150000 DAO: 1920000 DAOSupport: true EIP150: 2463000 EIP155: 2675000 EIP158: 2675000 Byzantium: 4370000 Constantinople: 7280000 Petersburg: 7280000 Istanbul: 9069000, Muir Glacier: 9200000, Berlin: 12244000, London: 12965000, Arrow Glacier: 13773000, MergeFork: <nil>, Engine: ethash}"`<br>
+* Configuration
+* chainID
+
 `INFO [02-19|00:18:12.472] IPC endpoint opened                      url=\\.\pipe\geth.ipc`<br>
-Windows系統為pipe；Linux&Mac系統需要透過檔案傳送IPC
-這裡並沒有HTTP RPC endpoint open(loclahost:8545)，所以我們無法在此直接連接瀏覽器
-資料預設儲存位置
+* Windows系統為pipe；Linux&Mac系統需要透過檔案傳送IPC
+* 這裡並沒有HTTP RPC endpoint open(loclahost:8545)，所以我們無法在此直接連接瀏覽器
+
+### 資料預設儲存位置
 我們可以在此找到所有的區塊資料：User->AppData->Roaming->Ethereum->geth->chaindata
 我們可以在此找到所有的密鑰資料：User->AppData->Roaming->Ethereum->geth->keystore
 
@@ -70,7 +76,7 @@ Windows系統為pipe；Linux&Mac系統需要透過檔案傳送IPC
 > OSX: ~/Library/Ethereum 
 > Windows: ~/AppData/Roaming/Ethereum
 
-Attach Geth
+### Attach Geth
 如果只輸入$ geth 作為命令，將會作為伺服器一樣的與外界連接。當我們先以 $ geth的方式啟動，再新開一個命令提示字元以以下方式啟動Geth，便可將新開的視窗做為客戶端：
 ```
 $ geth attach
